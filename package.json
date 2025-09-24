@@ -1,20 +1,14 @@
 {
-  "name": "frontend-chtabot",
+  "name": "frontend-chatbot",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "live-server"
+    "start": "node server.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Tushar8518/Frontend-chtabot.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Tushar8518/Frontend-chtabot/issues"
-  },
-  "homepage": "https://github.com/Tushar8518/Frontend-chtabot#readme"
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "openai": "^4.30.0"
+  }
 }
