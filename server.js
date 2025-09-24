@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();  // Load .env variables
+
 import express from "express";
 import cors from "cors";
 import OpenAI from "openai";
