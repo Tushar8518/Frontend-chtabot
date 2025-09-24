@@ -27,76 +27,71 @@
   <!-- Chatbot JS -->
   <script>
     const chatbotButton = document.getElementById('chatbot-button');
-    const chatbotWidget = document.getElementById('chatbot-widget');
-    const chatbotClose = document.getElementById('chatbot-close');
-    const chatbotMessages = document.getElementById('chatbot-messages');
-    const chatbotInput = document.getElementById('chatbot-input');
-    const chatbotSend = document.getElementById('chatbot-send');
+const chatbotWidget = document.getElementById('chatbot-widget');
+const chatbotClose = document.getElementById('chatbot-close');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
 
-    // Show/hide chatbot
-    chatbotButton.onclick = () => chatbotWidget.style.display = 'flex';
-    chatbotClose.onclick = () => chatbotWidget.style.display = 'none';
+// Show/hide chatbot
+chatbotButton.onclick = () => chatbotWidget.style.display = 'flex';
+chatbotClose.onclick = () => chatbotWidget.style.display = 'none';
 
-    // Add message
-    function addMessage(text, sender){
-        const div = document.createElement('div');
-        div.className = 'message ' + sender;
+// Add message to chat
+function addMessage(text, sender, typing = false){
+    const div = document.createElement('div');
+    div.className = 'message ' + sender;
 
-        // Typing indicator
-        if(sender==='bot' && text==='Typing...'){
-            div.classList.add('typing');
-            div.innerHTML = '<span></span><span></span><span></span>';
-        } else {
-            div.textContent = text;
-        }
-
-        chatbotMessages.appendChild(div);
-        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    if(sender === 'bot' && typing){
+        div.classList.add('typing');
+        div.innerHTML = '<span></span><span></span><span></span>';
+    } else {
+        div.textContent = text;
     }
 
-    // Example responses
-    async function getResponse(message) {
-  try {
-    const res = await fetch("http://localhost:5000/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message })
-    });
-    const data = await res.json();
-    return data.reply;
-  } catch (err) {
-    return "Sorry, I could not connect to AI.";
-  }
+    chatbotMessages.appendChild(div);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    return div; // return the message div
 }
 
+// Get AI response from backend
+async function getResponse(message){
+    try {
+        const res = await fetch("http://localhost:5000/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+        return data.reply;
+    } catch (err) {
+        return "Sorry, I could not connect to AI.";
+    }
+}
 
-    // Send message
-async function sendMessage() {
+// Send message
+async function sendMessage(){
     const text = chatbotInput.value.trim();
-    if (!text) return;
+    if(!text) return;
 
     // Show user's message
     addMessage(text, 'user');
     chatbotInput.value = '';
 
-    // Show typing indicator for bot
-    addMessage('Typing...', 'bot');
+    // Show bot typing indicator
+    const botDiv = addMessage('', 'bot', true);
 
-    // Get bot response from async API
-    const botDiv = document.querySelector('.message.bot:last-child');
+    // Wait for AI response
+    const reply = await getResponse(text);
 
-    try {
-        const reply = await getResponse(text);  // await the async function
-        botDiv.classList.remove('typing');
-        botDiv.textContent = reply;
-    } catch (err) {
-        botDiv.classList.remove('typing');
-        botDiv.textContent = "Sorry, I could not connect to AI.";
-    }
+    // Replace typing indicator with AI reply
+    botDiv.classList.remove('typing');
+    botDiv.textContent = reply;
 }
 
-    chatbotSend.onclick = sendMessage;
-chatbotInput.onkeydown = e => { if(e.key === 'Enter') sendMessage(); };
+// Event listeners
+chatbotSend.onclick = sendMessage;
+chatbotInput.onkeydown = e => { if(e.key==='Enter') sendMessage(); };
 
   </script>
 
