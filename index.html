@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chatbot Simulator</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div id="chatbot-widget">
+  <div id="chatbot-header">
+    Chat with AI
+    <span id="chatbot-close">&times;</span>
+  </div>
+  <div id="chatbot-messages"></div>
+  <div id="chatbot-input-area">
+    <input type="text" id="chatbot-input" placeholder="Type your message...">
+    <button id="chatbot-send">Send</button>
+  </div>
+</div>
+
+<div id="chatbot-button">&#128172; Chat</div>
+
+<script>
+// Basic “GPT-like” responses
+const responses = [
+  {keywords: ["hello","hi","hey"], reply: "Hello! How can I help you today?"},
+  {keywords: ["help","support"], reply: "Sure! What do you need help with?"},
+  {keywords: ["price","cost"], reply: "Our pricing depends on the service. Can you specify which one?"},
+  {keywords: ["services","offer"], reply: "We offer web development, AI solutions, and tech support."},
+  {keywords: ["thanks","thank you"], reply: "You’re welcome! 😊"},
+];
+
+const chatbotButton = document.getElementById('chatbot-button');
+const chatbotWidget = document.getElementById('chatbot-widget');
+const chatbotClose = document.getElementById('chatbot-close');
+const chatbotMessages = document.getElementById('chatbot-messages');
+const chatbotInput = document.getElementById('chatbot-input');
+const chatbotSend = document.getElementById('chatbot-send');
+
+// Show/hide chatbot
+chatbotButton.onclick = () => chatbotWidget.style.display = 'flex';
+chatbotClose.onclick = () => chatbotWidget.style.display = 'none';
+
+// Add message to chat
+function addMessage(text, sender){
+  const div = document.createElement('div');
+  div.className = 'message ' + sender;
+  div.textContent = text;
+  chatbotMessages.appendChild(div);
+  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+}
+
+// Simulated GPT response
+function getResponse(message){
+  const msg = message.toLowerCase();
+  for(let item of responses){
+    if(item.keywords.some(k => msg.includes(k))) return item.reply;
+  }
+  return "I’m sorry, I don’t know that. Can you ask differently?";
+}
+
+// Send message
+function sendMessage(){
+  const text = chatbotInput.value.trim();
+  if(!text) return;
+  addMessage(text, 'user');
+  chatbotInput.value = '';
+  addMessage('Typing...', 'bot');
+  setTimeout(() => {
+    const botDiv = document.querySelector('.message.bot:last-child');
+    botDiv.textContent = getResponse(text);
+  }, 500);
+}
+
+chatbotSend.onclick = sendMessage;
+chatbotInput.onkeydown = e => { if(e.key==='Enter') sendMessage(); };
+</script>
+
+</body>
+</html>
