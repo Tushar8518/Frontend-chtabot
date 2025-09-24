@@ -96,7 +96,8 @@ async function sendMessage() {
 }
 
     chatbotSend.onclick = sendMessage;
-    chatbotInput.onkeydown = e => { if(e.key==='Enter') sendMessage(); };
+chatbotInput.onkeydown = e => { if(e.key === 'Enter') sendMessage(); };
+
   </script>
 
 </body>
