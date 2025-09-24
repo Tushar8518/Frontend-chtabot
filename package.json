@@ -1,0 +1,20 @@
+{
+  "name": "frontend-chtabot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "live-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tushar8518/Frontend-chtabot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tushar8518/Frontend-chtabot/issues"
+  },
+  "homepage": "https://github.com/Tushar8518/Frontend-chtabot#readme"
+}
