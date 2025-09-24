@@ -23,15 +23,6 @@
 <div id="chatbot-button">&#128172; Chat</div>
 
 <script>
-// Basic “GPT-like” responses
-const responses = [
-  {keywords: ["hello","hi","hey"], reply: "Hello! How can I help you today?"},
-  {keywords: ["help","support"], reply: "Sure! What do you need help with?"},
-  {keywords: ["price","cost"], reply: "Our pricing depends on the service. Can you specify which one?"},
-  {keywords: ["services","offer"], reply: "We offer web development, AI solutions, and tech support."},
-  {keywords: ["thanks","thank you"], reply: "You’re welcome! 😊"},
-];
-
 const chatbotButton = document.getElementById('chatbot-button');
 const chatbotWidget = document.getElementById('chatbot-widget');
 const chatbotClose = document.getElementById('chatbot-close');
@@ -45,37 +36,51 @@ chatbotClose.onclick = () => chatbotWidget.style.display = 'none';
 
 // Add message to chat
 function addMessage(text, sender){
-  const div = document.createElement('div');
-  div.className = 'message ' + sender;
-  div.textContent = text;
-  chatbotMessages.appendChild(div);
-  chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    const div = document.createElement('div');
+    div.className = 'message ' + sender;
+
+    // Typing indicator for bot
+    if(sender==='bot' && text==='Typing...'){
+        div.classList.add('typing');
+        div.innerHTML = '<span></span><span></span><span></span>';
+    } else {
+        div.textContent = text;
+    }
+
+    chatbotMessages.appendChild(div);
+    chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 }
 
-// Simulated GPT response
+// Example GPT-like responses
 function getResponse(message){
-  const msg = message.toLowerCase();
-  for(let item of responses){
-    if(item.keywords.some(k => msg.includes(k))) return item.reply;
-  }
-  return "I’m sorry, I don’t know that. Can you ask differently?";
+    const msg = message.toLowerCase();
+    if(msg.includes("hello")||msg.includes("hi")) return "Hello! How can I help you?";
+    if(msg.includes("help")) return "Sure! What do you need help with?";
+    if(msg.includes("price")) return "Our pricing depends on the service. Can you specify?";
+    if(msg.includes("services")) return "We offer web development, AI solutions, and tech support.";
+    if(msg.includes("thanks")) return "You're welcome! 😊";
+    return "I’m sorry, I don’t know that. Can you ask differently?";
 }
 
 // Send message
 function sendMessage(){
-  const text = chatbotInput.value.trim();
-  if(!text) return;
-  addMessage(text, 'user');
-  chatbotInput.value = '';
-  addMessage('Typing...', 'bot');
-  setTimeout(() => {
-    const botDiv = document.querySelector('.message.bot:last-child');
-    botDiv.textContent = getResponse(text);
-  }, 500);
+    const text = chatbotInput.value.trim();
+    if(!text) return;
+    addMessage(text, 'user');
+    chatbotInput.value = '';
+    addMessage('Typing...', 'bot');
+
+    setTimeout(() => {
+        const botDiv = document.querySelector('.message.bot:last-child');
+        botDiv.classList.remove('typing');
+        botDiv.textContent = getResponse(text);
+    }, 1000);
 }
 
+// Event listeners
 chatbotSend.onclick = sendMessage;
 chatbotInput.onkeydown = e => { if(e.key==='Enter') sendMessage(); };
+
 </script>
 
 </body>
