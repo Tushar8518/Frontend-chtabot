@@ -55,15 +55,20 @@
     }
 
     // Example responses
-    function getResponse(message){
-        const msg = message.toLowerCase();
-        if(msg.includes("hello")||msg.includes("hi")) return "Hello! How can I help you?";
-        if(msg.includes("help")) return "Sure! What do you need help with?";
-        if(msg.includes("price")) return "Our pricing depends on the service. Can you specify?";
-        if(msg.includes("services")) return "We offer web development, AI solutions, and tech support.";
-        if(msg.includes("thanks")) return "You're welcome! 😊";
-        return "I’m sorry, I don’t know that. Can you ask differently?";
-    }
+    async function getResponse(message) {
+  try {
+    const res = await fetch("http://localhost:5000/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message })
+    });
+    const data = await res.json();
+    return data.reply;
+  } catch (err) {
+    return "Sorry, I could not connect to AI.";
+  }
+}
+
 
     // Send message
     function sendMessage(){
