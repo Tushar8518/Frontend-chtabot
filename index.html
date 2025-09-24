@@ -71,19 +71,29 @@
 
 
     // Send message
-    function sendMessage(){
-        const text = chatbotInput.value.trim();
-        if(!text) return;
-        addMessage(text, 'user');
-        chatbotInput.value = '';
-        addMessage('Typing...', 'bot');
+async function sendMessage() {
+    const text = chatbotInput.value.trim();
+    if (!text) return;
 
-        setTimeout(() => {
-            const botDiv = document.querySelector('.message.bot:last-child');
-            botDiv.classList.remove('typing');
-            botDiv.textContent = getResponse(text);
-        }, 1000);
+    // Show user's message
+    addMessage(text, 'user');
+    chatbotInput.value = '';
+
+    // Show typing indicator for bot
+    addMessage('Typing...', 'bot');
+
+    // Get bot response from async API
+    const botDiv = document.querySelector('.message.bot:last-child');
+
+    try {
+        const reply = await getResponse(text);  // await the async function
+        botDiv.classList.remove('typing');
+        botDiv.textContent = reply;
+    } catch (err) {
+        botDiv.classList.remove('typing');
+        botDiv.textContent = "Sorry, I could not connect to AI.";
     }
+}
 
     chatbotSend.onclick = sendMessage;
     chatbotInput.onkeydown = e => { if(e.key==='Enter') sendMessage(); };
