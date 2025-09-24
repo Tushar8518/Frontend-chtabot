@@ -1,27 +1,24 @@
-// server.js
+import 'dotenv/config';  // automatically loads .env
 import express from "express";
-import cors from "cors";
 import OpenAI from "openai";
+import cors from "cors";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY // store key in .env
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 app.post("/chat", async (req, res) => {
   const { message } = req.body;
-
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: message }],
     });
-
-    const reply = response.choices[0].message.content;
-    res.json({ reply });
+    res.json({ reply: response.choices[0].message.content });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
