@@ -1,7 +1,7 @@
-import 'dotenv/config';  // automatically loads .env
+import 'dotenv/config';
 import express from "express";
-import OpenAI from "openai";
 import cors from "cors";
+import OpenAI from "openai";
 
 const app = express();
 app.use(cors());
